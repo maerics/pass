@@ -1,10 +1,10 @@
 # pass
 
-Password hashing and key generation utilities.
+Password hashing and key derivation utilities.
 
 ## Usage
 ```
-Password hashing and key generation utilities.
+Password hashing and key derivation utilities.
 
 Usage:
   pass [command]

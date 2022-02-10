@@ -12,7 +12,7 @@ func main() {
 	log.SetFlags(0)
 
 	rootCmd := &cobra.Command{
-		Use: "pass", Short: "Password hashing and key generation utilities.",
+		Use: "pass", Short: "Password hashing and key derivation utilities.",
 		CompletionOptions: cobra.CompletionOptions{DisableDefaultCmd: true},
 	}
 

@@ -36,7 +36,7 @@ func GetScryptCmd() *cobra.Command {
 			}
 
 			bs, err := scrypt.Key(password, salt, options.N, options.r, options.p, options.KeyLength)
-			fatal(err, "scrypt key generation failed")
+			fatal(err, "scrypt key derivation failed")
 			fmt.Println(hex.EncodeToString(bs))
 		},
 	}
