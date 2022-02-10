@@ -24,15 +24,7 @@ func GetArgon2Cmd() *cobra.Command {
 			password, err := ioutil.ReadAll(os.Stdin)
 			fatal(err, "failed to read password from stdin")
 
-			var salt []byte
-			if usersalt == RANDOM_SALT_PLACEHOLDER {
-				salt = randombytes(16)
-			} else {
-				if salt, err = hex.DecodeString(usersalt); err != nil {
-					fatal(err, "invalid salt hex encoding")
-				}
-			}
-
+			salt := getSalt(usersalt)
 			bs := argon2.Key(password, salt, time, memory, threads, keylength)
 			fmt.Println(hex.EncodeToString(bs))
 		},

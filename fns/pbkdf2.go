@@ -30,15 +30,7 @@ func GetPbkdf2Cmd() *cobra.Command {
 			password, err := ioutil.ReadAll(os.Stdin)
 			fatal(err, "failed to read password from stdin")
 
-			var salt []byte
-			if usersalt == RANDOM_SALT_PLACEHOLDER {
-				salt = randombytes(16)
-			} else {
-				if salt, err = hex.DecodeString(usersalt); err != nil {
-					fatal(err, "invalid salt hex encoding")
-				}
-			}
-
+			salt := getSalt(usersalt)
 			hashfn := getPbkdf2HashFn(hash)
 			bs := pbkdf2.Key(password, salt, iterations, keylength, hashfn)
 			fmt.Println(hex.EncodeToString(bs))

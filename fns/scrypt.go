@@ -22,15 +22,7 @@ func GetScryptCmd() *cobra.Command {
 			password, err := ioutil.ReadAll(os.Stdin)
 			fatal(err, "failed to read password from stdin")
 
-			var salt []byte
-			if usersalt == RANDOM_SALT_PLACEHOLDER {
-				salt = randombytes(16)
-			} else {
-				if salt, err = hex.DecodeString(usersalt); err != nil {
-					fatal(err, "invalid salt hex encoding")
-				}
-			}
-
+			salt := getSalt(usersalt)
 			bs, err := scrypt.Key(password, salt, n, r, p, keylength)
 			fatal(err, "scrypt key derivation failed")
 			fmt.Println(hex.EncodeToString(bs))
