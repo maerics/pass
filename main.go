@@ -19,7 +19,7 @@ func main() {
 	for _, cmd := range []*cobra.Command{
 		fns.GetArgon2Cmd(),
 		fns.GetPbkdf2Cmd(),
-		// fns.getBcryptCmd(),
+		fns.GetBcryptCmd(),
 		fns.GetScryptCmd(),
 	} {
 		rootCmd.AddCommand(cmd)
