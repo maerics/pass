@@ -11,13 +11,9 @@ import (
 )
 
 func GetScryptCmd() *cobra.Command {
-	options := struct {
-		Salt      string
-		N, r, p   int
-		KeyLength int
-	}{
-		Salt: RANDOM_SALT_PLACEHOLDER, N: 32768, r: 8, p: 1, KeyLength: 32,
-	}
+	usersalt := RANDOM_SALT_PLACEHOLDER
+	n, r, p := 32768, 8, 1
+	keylength := 32
 
 	cmd := &cobra.Command{
 		Use:   "scrypt",
@@ -27,30 +23,30 @@ func GetScryptCmd() *cobra.Command {
 			fatal(err, "failed to read password from stdin")
 
 			var salt []byte
-			if options.Salt == RANDOM_SALT_PLACEHOLDER {
+			if usersalt == RANDOM_SALT_PLACEHOLDER {
 				salt = randombytes(16)
 			} else {
-				if salt, err = hex.DecodeString(options.Salt); err != nil {
+				if salt, err = hex.DecodeString(usersalt); err != nil {
 					fatal(err, "invalid salt hex encoding")
 				}
 			}
 
-			bs, err := scrypt.Key(password, salt, options.N, options.r, options.p, options.KeyLength)
+			bs, err := scrypt.Key(password, salt, n, r, p, keylength)
 			fatal(err, "scrypt key derivation failed")
 			fmt.Println(hex.EncodeToString(bs))
 		},
 	}
 
 	flags := cmd.Flags()
-	flags.StringVarP(&options.Salt, "salt", "s", options.Salt,
+	flags.StringVarP(&usersalt, "salt", "s", usersalt,
 		"salt value encoded as hexadecimal")
-	flags.IntVarP(&options.N, "N", "N", options.N,
+	flags.IntVarP(&n, "N", "N", n,
 		"CPU/memory cost parameter, which must be a power of two greater than 1")
-	flags.IntVarP(&options.r, "r", "r", options.r,
+	flags.IntVarP(&r, "r", "r", r,
 		"r and p must satisfy r * p < 2^30")
-	flags.IntVarP(&options.p, "p", "p", options.p,
+	flags.IntVarP(&p, "p", "p", p,
 		"r and p must satisfy r * p < 2^30")
-	flags.IntVarP(&options.KeyLength, "length", "l", options.KeyLength,
+	flags.IntVarP(&keylength, "length", "l", keylength,
 		"length of resulting key in bytes")
 
 	return cmd

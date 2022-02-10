@@ -11,15 +11,11 @@ import (
 )
 
 func GetArgon2Cmd() *cobra.Command {
-	options := struct {
-		Salt         string
-		Time, Memory uint32
-		Threads      uint8
-		KeyLength    uint32
-	}{
-		Salt: RANDOM_SALT_PLACEHOLDER,
-		Time: 1, Memory: 64 * 1024, Threads: 1, KeyLength: 32,
-	}
+	usersalt := RANDOM_SALT_PLACEHOLDER
+	time := uint32(1)
+	memory := uint32(64 * 1024)
+	threads := uint8(1)
+	keylength := uint32(32)
 
 	cmd := &cobra.Command{
 		Use:   "argon2",
@@ -29,30 +25,25 @@ func GetArgon2Cmd() *cobra.Command {
 			fatal(err, "failed to read password from stdin")
 
 			var salt []byte
-			if options.Salt == RANDOM_SALT_PLACEHOLDER {
+			if usersalt == RANDOM_SALT_PLACEHOLDER {
 				salt = randombytes(16)
 			} else {
-				if salt, err = hex.DecodeString(options.Salt); err != nil {
+				if salt, err = hex.DecodeString(usersalt); err != nil {
 					fatal(err, "invalid salt hex encoding")
 				}
 			}
 
-			bs := argon2.Key(password, salt, options.Time, options.Memory, options.Threads, options.KeyLength)
+			bs := argon2.Key(password, salt, time, memory, threads, keylength)
 			fmt.Println(hex.EncodeToString(bs))
 		},
 	}
 
 	flags := cmd.Flags()
-	flags.StringVarP(&options.Salt, "salt", "s", options.Salt,
-		"salt value encoded as hexadecimal")
-	flags.Uint32VarP(&options.Time, "time", "t", options.Time,
-		"number of passes over the memory")
-	flags.Uint32VarP(&options.Memory, "memory", "m", options.Memory,
-		"size of the memory in KiB")
-	flags.Uint8VarP(&options.Threads, "threads", "j", options.Threads,
-		"number of concurrent threads to use")
-	flags.Uint32VarP(&options.KeyLength, "length", "l", options.KeyLength,
-		"length of resulting key in bytes")
+	flags.StringVarP(&usersalt, "salt", "s", usersalt, "salt value encoded as hexadecimal")
+	flags.Uint32VarP(&time, "time", "t", time, "number of passes over the memory")
+	flags.Uint32VarP(&memory, "memory", "m", memory, "size of the memory in KiB")
+	flags.Uint8VarP(&threads, "threads", "j", threads, "number of concurrent threads to use")
+	flags.Uint32VarP(&keylength, "length", "l", keylength, "length of resulting key in bytes")
 
 	return cmd
 }
