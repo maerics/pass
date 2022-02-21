@@ -2,7 +2,6 @@ package fns
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -18,8 +17,7 @@ func GetBcryptCmd() *cobra.Command {
 		Use:   "bcrypt",
 		Short: `Perform password key derivation and verification using "bcrypt".`,
 		Run: func(cmd *cobra.Command, args []string) {
-			password, err := ioutil.ReadAll(os.Stdin)
-			fatal(err, "failed to read password from stdin")
+			password := readUserPassword()
 
 			if verify == "" {
 				bs, err := bcrypt.GenerateFromPassword(password, cost)

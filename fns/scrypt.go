@@ -3,8 +3,6 @@ package fns
 import (
 	"encoding/hex"
 	"fmt"
-	"io/ioutil"
-	"os"
 
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/scrypt"
@@ -19,9 +17,7 @@ func GetScryptCmd() *cobra.Command {
 		Use:   "scrypt",
 		Short: `Perform password key derivation using "scrypt".`,
 		Run: func(cmd *cobra.Command, args []string) {
-			password, err := ioutil.ReadAll(os.Stdin)
-			fatal(err, "failed to read password from stdin")
-
+			password := readUserPassword()
 			salt := getSalt(usersalt)
 			bs, err := scrypt.Key(password, salt, n, r, p, keylength)
 			fatal(err, "scrypt key derivation failed")

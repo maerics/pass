@@ -3,8 +3,6 @@ package fns
 import (
 	"encoding/hex"
 	"fmt"
-	"io/ioutil"
-	"os"
 
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/argon2"
@@ -21,9 +19,7 @@ func GetArgon2Cmd() *cobra.Command {
 		Use:   "argon2",
 		Short: `Perform password key derivation using "argon2".`,
 		Run: func(cmd *cobra.Command, args []string) {
-			password, err := ioutil.ReadAll(os.Stdin)
-			fatal(err, "failed to read password from stdin")
-
+			password := readUserPassword()
 			salt := getSalt(usersalt)
 			bs := argon2.Key(password, salt, time, memory, threads, keylength)
 			fmt.Println(hex.EncodeToString(bs))

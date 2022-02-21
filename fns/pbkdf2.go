@@ -7,9 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"hash"
-	"io/ioutil"
 	"log"
-	"os"
 	"regexp"
 	"strings"
 
@@ -27,9 +25,7 @@ func GetPbkdf2Cmd() *cobra.Command {
 		Use:   "pbkdf2",
 		Short: `Perform password key derivation using "pbkdf2".`,
 		Run: func(cmd *cobra.Command, args []string) {
-			password, err := ioutil.ReadAll(os.Stdin)
-			fatal(err, "failed to read password from stdin")
-
+			password := readUserPassword()
 			salt := getSalt(usersalt)
 			hashfn := getPbkdf2HashFn(hash)
 			bs := pbkdf2.Key(password, salt, iterations, keylength, hashfn)
