@@ -8,13 +8,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func main() {
-	log.SetFlags(0)
-
-	rootCmd := &cobra.Command{
+func newPassCmd() *cobra.Command {
+	return &cobra.Command{
 		Use: "pass", Short: "Password hashing and key derivation utilities.",
 		CompletionOptions: cobra.CompletionOptions{DisableDefaultCmd: true},
 	}
+}
+
+var passCmd = newPassCmd()
+
+func main() {
+	log.SetFlags(0)
 
 	for _, cmd := range []*cobra.Command{
 		fns.GetArgon2Cmd(),
@@ -22,10 +26,10 @@ func main() {
 		fns.GetBcryptCmd(),
 		fns.GetScryptCmd(),
 	} {
-		rootCmd.AddCommand(cmd)
+		passCmd.AddCommand(cmd)
 	}
 
-	if err := rootCmd.Execute(); err != nil {
+	if err := passCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
