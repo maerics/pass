@@ -1,7 +1,7 @@
 # See https://goreleaser.com/quick-start/
 # vim: set ts=2 sw=2 tw=0 fo=cnqoj
 
-version: 1
+version: 2
 
 before:
   hooks:
@@ -20,7 +20,7 @@ builds:
       - -X "main.date={{ .Date }}"
 
 archives:
-  - format: tar.gz
+  - formats: tar.gz
     # this name template makes the OS and Arch compatible with the results of `uname`.
     name_template: >-
       {{ .ProjectName }}_
@@ -33,7 +33,7 @@ archives:
     # use zip for windows archives
     format_overrides:
       - goos: windows
-        format: zip
+        formats: [zip]
 
 changelog:
   sort: asc
@@ -53,9 +53,9 @@ brews:
       name: goreleaserbot
       email: bot@goreleaser.com
     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
-    folder: Formula
+    directory: Formula
     homepage: "https://github.com/maerics/pass"
-    description: "Transcode various formats between stdin and stdout."
+    description: "Password hashing and key derivation utilities."
     license: "MIT"
 
     # Repository to push the generated files to.
